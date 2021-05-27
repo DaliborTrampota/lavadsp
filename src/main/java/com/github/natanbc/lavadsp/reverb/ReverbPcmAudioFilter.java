@@ -155,18 +155,13 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
         return setMixPercent(function.apply(mixPercent));
     }
 
-    /*@Override
+    @Override
     public void process(float[][] input, int offset, int length) throws InterruptedException {
-        if(converter == null || input.length != 2) {
-            downstream.process(input, offset, length);
-            return;
+        for(int i = 0; i < input.length; i++) {
+            converters.get(i).process(input[i], offset, input[i], 0, length);
         }
-        float[] left = input[0];
-        float[] right = input[1];
-        
-        converter.process(left, right, offset, left, right, 0, length);
         downstream.process(input, 0, length);
-    }*/
+    }
 
     @Override
     public void seekPerformed(long requestedTime, long providedTime) {
