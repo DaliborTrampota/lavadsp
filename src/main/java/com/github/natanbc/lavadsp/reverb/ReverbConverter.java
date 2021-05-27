@@ -40,7 +40,7 @@ public class ReverbConverter {
 			rightOut[i + delaySamples + outputOffset] += (r * decay);
         }
     }*/
-	
+
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
     public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
@@ -63,13 +63,17 @@ public class ReverbConverter {
 	
 		//Algorithm for Dry/Wet Mix in the output audio
 		float [] mixAudio = new float[samples];
-		for(int i=0; i < samples; i++)
+		for(int i=0; i < samples; ++i)
 			mixAudio[i] = ((100 - mixPercent) * input[i]) + (mixPercent * outputComb[i]); 
 
 		
 		//Method calls for 2 All Pass Filters. Defined at the bottom
 		float[] allPassFilterSamples1 = this.allPassFilter(mixAudio, samples);
 		float[] allPassFilterSamples2 = this.allPassFilter(allPassFilterSamples1, samples);
+
+		for(int i = 0; i < samples; ++i){
+			output[i + outputOffset] = allPassFilterSamples2[i]
+		}
     }
 
     //Method for Comb Filter
