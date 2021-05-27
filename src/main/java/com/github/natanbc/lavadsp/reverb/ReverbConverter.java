@@ -45,8 +45,8 @@ public class ReverbConverter {
    	public void process(float[] leftIn, float[] rightIn, int inputOffset,
                         float[] leftOut, float[] rightOut, int outputOffset, int samples) {
 
-		leftOut = processFilter(leftIn, samples)
-		rightOut = processFilter(rightIn, samples)
+		leftOut = processFilter(leftIn, samples);
+		rightOut = processFilter(rightIn, samples);
     }
 
 	public float[] processFilter(float[] input, int samples){
