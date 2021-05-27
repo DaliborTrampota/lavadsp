@@ -69,11 +69,7 @@ public class ReverbConverter {
 		
 		//Method calls for 2 All Pass Filters. Defined at the bottom
 		float[] allPassFilterSamples1 = this.allPassFilter(mixAudio, samples);
-		float[] allPassFilterSamples2 = this.allPassFilter(allPassFilterSamples1, samples);
-
-		for(int i = 0; i < samples; ++i){
-			output[i + outputOffset] = allPassFilterSamples2[i];
-		}
+		output = this.allPassFilter(allPassFilterSamples1, samples);
     }
 
     //Method for Comb Filter
