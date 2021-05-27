@@ -27,7 +27,7 @@ public class ReverbConverter {
         this.mixPercent = mixPercent;
     }
     
-    public void process2(float[] leftIn, float[] rightIn, int inputOffset,
+    /*public void process(float[] leftIn, float[] rightIn, int inputOffset,
                         float[] leftOut, float[] rightOut, int outputOffset, int samples) {
 
         int delaySamples = (int)(this.delayMilliseconds * (this.sampleRate / 1000)); // assumes kHz sample rate
@@ -39,7 +39,8 @@ public class ReverbConverter {
 			leftOut[i + delaySamples + outputOffset] += (l * decay);
 			rightOut[i + delaySamples + outputOffset] += (r * decay);
         }
-    }
+    }*/
+	
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
     public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
