@@ -42,14 +42,14 @@ public class ReversePcmAudioFilter implements FloatPcmAudioFilter {
      */
     public ReversePcmAudioFilter updateReverse(FloatToFloatFunction function) {
         return setReverse(function.apply(reverse));
-    
+    }
 
     @Override
     public void process(float[][] input, int offset, int length) throws InterruptedException {
         
         if(input.length != 2) {
             if(this.reverse == 1f){
-                reverseArray(input)
+                reverseArray(input);
             }
             downstream.process(input, offset, length);
             return;
