@@ -25,6 +25,7 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
 
     private volatile float delayMilliseconds = 0.0f;
     private volatile float decay = 0.0f;
+    private volatile float mixPercent = 0.0f;
 
     public ReverbPcmAudioFilter(FloatPcmAudioFilter downstream, int channelCount, int sampleRate) {
         this.downstream = downstream;
@@ -88,7 +89,7 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
      * @return The current mono level.
      */
     public float getDelay() {
-        return delayMilliseconds;
+        return this.delayMilliseconds;
     }
 
     /**
@@ -101,7 +102,7 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
     public ReverbPcmAudioFilter setDelay(float delay) {
         this.delayMilliseconds = delay;
         if(converter != null) {
-            converter.getDelay(delay);
+            converter.setDelay(delay);
         }
         return this;
     }
@@ -118,6 +119,42 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
         return setDelay(function.apply(delayMilliseconds));
     }
 
+/**
+     * Returns the current mono level.
+     *
+     * @return The current mono level.
+     */
+    public float getMixPercent() {
+        return this.mixPercent;
+    }
+
+    /**
+     * Sets the effect mono level.
+     *
+     * @param level Mono level to set.
+     *
+     * @return {@code this}, for chaining calls
+     */
+    public ReverbPcmAudioFilter setMixPercent(float mixPercent) {
+        this.mixPercent = mixPercent;
+        if(converter != null) {
+            converter.setMixPercent(mixPercent);
+        }
+        return this;
+    }
+
+    /**
+     * Updates the effect mono level, using a function that accepts the current value
+     * and returns a new value.
+     *
+     * @param function Function used to map the mono level.
+     *
+     * @return {@code this}, for chaining calls
+     */
+    public ReverbPcmAudioFilter updateMixPercent(FloatToFloatFunction function) {
+        return setMixPercent(function.apply(mixPercent));
+    }
+    
     @Override
     public void process(float[][] input, int offset, int length) throws InterruptedException {
         if(converter == null || input.length != 2) {

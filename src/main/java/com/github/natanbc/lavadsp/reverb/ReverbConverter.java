@@ -1,9 +1,12 @@
 package com.github.natanbc.lavadsp.reverb;
 
+import java.util.Arrays;
+
 public class ReverbConverter {
     private final int sampleRate;
     private float delayMilliseconds = 0.0f;
     private float decay = 0.0f;
+	private float mixPercent = 0.0f;
     
     public ReverbConverter(int sampleRate) {
         if(sampleRate < 1) {
@@ -20,6 +23,9 @@ public class ReverbConverter {
         this.decay = decay;
     }
     
+	public void setMixPercent(float mixPercent) {
+        this.mixPercent = mixPercent;
+    }
     
     public void process(float[] leftIn, float[] rightIn, int inputOffset,
                         float[] leftOut, float[] rightOut, int outputOffset, int samples) {
@@ -39,10 +45,10 @@ public class ReverbConverter {
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
     public void process2(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
-        float[] combFilterSamples1 = combFilter(input, samples, delayMilliseconds, decay);
-		float[] combFilterSamples2 = combFilter(input, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f));
-		float[] combFilterSamples3 = combFilter(input, samples, (delayMilliseconds + 19.31f), (decay - 0.2743f));
-		float[] combFilterSamples4 = combFilter(input, samples, (delayMilliseconds - 7.97f), (decay - 0.31f));
+        float[] combFilterSamples1 = this.combFilter(input, samples, delayMilliseconds, decay);
+		float[] combFilterSamples2 = this.combFilter(input, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f));
+		float[] combFilterSamples3 = this.combFilter(input, samples, (delayMilliseconds + 19.31f), (decay - 0.2743f));
+		float[] combFilterSamples4 = this.combFilter(input, samples, (delayMilliseconds - 7.97f), (decay - 0.31f));
 		
 		//Adding the 4 Comb Filters
 		float[] outputComb = new float[samples];
@@ -63,8 +69,8 @@ public class ReverbConverter {
 
 		
 		//Method calls for 2 All Pass Filters. Defined at the bottom
-		float[] allPassFilterSamples1 = allPassFilter(mixAudio, samples);
-		float[] allPassFilterSamples2 = allPassFilter(allPassFilterSamples1, samples);
+		float[] allPassFilterSamples1 = this.allPassFilter(mixAudio, samples);
+		float[] allPassFilterSamples2 = this.allPassFilter(allPassFilterSamples1, samples);
     }
 
     //Method for Comb Filter
