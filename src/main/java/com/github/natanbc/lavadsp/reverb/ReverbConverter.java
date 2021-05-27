@@ -15,7 +15,7 @@ public class ReverbConverter {
         this.sampleRate = sampleRate;
     }
     
-    public void setDelayMilliseconds(float ms) {
+    public void setDelay(float ms) {
         this.delayMilliseconds = ms;
     }
     
@@ -74,16 +74,16 @@ public class ReverbConverter {
     }
 
     //Method for Comb Filter
-	public float[] combFilter(float[] input, int samples)
+	public float[] combFilter(float[] input, int samples, float delayinMilliSeconds, float decayFactor)
 	{
 		//Calculating delay in samples from the delay in Milliseconds. Calculated from number of samples per millisecond
-		int delaySamples = (int) ((float)delayMilliseconds * (sampleRate / 1000));
+		int delaySamples = (int) ((float)delayinMilliSeconds * (sampleRate / 1000));
 		
 		float[] combFilterSamples = Arrays.copyOf(input, samples);
 	
 		//Applying algorithm for Comb Filter
 		for (int i = 0; i < samples - delaySamples; i++){
-			combFilterSamples[i+delaySamples] += ((float)combFilterSamples[i] * decay);
+			combFilterSamples[i+delaySamples] += ((float)combFilterSamples[i] * decayFactor);
 		}
 	    return combFilterSamples;
 	}

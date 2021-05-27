@@ -53,7 +53,7 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
      * @return The current level.
      */
     public float getDecay() {
-        return level;
+        return this.decay;
     }
 
     /**
@@ -154,7 +154,7 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
     public ReverbPcmAudioFilter updateMixPercent(FloatToFloatFunction function) {
         return setMixPercent(function.apply(mixPercent));
     }
-    
+
     @Override
     public void process(float[][] input, int offset, int length) throws InterruptedException {
         if(converter == null || input.length != 2) {
