@@ -42,15 +42,9 @@ public class ReverbConverter {
     }*/
 
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
-   	public void process(float[] leftIn, float[] rightIn, int inputOffset,
-                        float[] leftOut, float[] rightOut, int outputOffset, int samples) {
+    public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
-		leftOut = processFilter(leftIn, samples)
-		rightOut = processFilter(rightIn, samples)
-    }
-
-	public float[] processFilter(float[] input, int samples){
-		float[] combFilterSamples1 = this.combFilter(input, samples, delayMilliseconds, decay);
+        float[] combFilterSamples1 = this.combFilter(input, samples, delayMilliseconds, decay);
 		float[] combFilterSamples2 = this.combFilter(input, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f));
 		float[] combFilterSamples3 = this.combFilter(input, samples, (delayMilliseconds + 19.31f), (decay - 0.2743f));
 		float[] combFilterSamples4 = this.combFilter(input, samples, (delayMilliseconds - 7.97f), (decay - 0.31f));
@@ -75,8 +69,12 @@ public class ReverbConverter {
 		
 		//Method calls for 2 All Pass Filters. Defined at the bottom
 		float[] allPassFilterSamples1 = this.allPassFilter(mixAudio, samples);
-		return this.allPassFilter(allPassFilterSamples1, samples);
-	}
+		float[] allPassFilterSamples2 = this.allPassFilter(allPassFilterSamples1, samples);
+
+		for(int i = 0; i < samples; ++i){
+			output[i + outputOffset] = allPassFilterSamples2[i];
+		}
+    }
 
     //Method for Comb Filter
 	public float[] combFilter(float[] input, int samples, float delayinMilliSeconds, float decayFactor)
