@@ -157,9 +157,14 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
 
     @Override
     public void process(float[][] input, int offset, int length) throws InterruptedException {
-        for(int i = 0; i < input.length; i++) {
-            converter.process(input[i], offset, input[i], 0, length);
+        if(converter == null || input.length != 2) {
+            downstream.process(input, offset, length);
+            return;
         }
+        float[] left = input[0];
+        float[] right = input[1];
+        
+        converter.process(left, right, offset, left, right, 0, length);
         downstream.process(input, 0, length);
     }
 
