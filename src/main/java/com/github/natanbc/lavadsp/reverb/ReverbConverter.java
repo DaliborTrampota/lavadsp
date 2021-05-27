@@ -1,11 +1,11 @@
-package com.github.natanbc.lavadsp.karaoke;
+package com.github.natanbc.lavadsp.reverb;
 
-public class KaraokeConverter {
+public class ReverbConverter {
     private final int sampleRate;
     private float delayMilliseconds = 0.0f;
     private float decay = 0.0f;
     
-    public KaraokeConverter(int sampleRate) {
+    public ReverbConverter(int sampleRate) {
         if(sampleRate < 1) {
             throw new IllegalArgumentException("Sample rate < 1");
         }

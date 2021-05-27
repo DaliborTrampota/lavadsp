@@ -19,7 +19,7 @@ public class ReversePcmAudioFilter implements FloatPcmAudioFilter {
      * @return The current right-to-right factor. The default is 1.0.
      */
     public float getReverse() {
-        return reverse;
+        return this.reverse;
     }
     
     /**
