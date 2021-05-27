@@ -49,10 +49,6 @@ public class ReverbConverter {
 		rightOut = processFilter(rightIn, samples);
     }
 
-	public void processOne(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
-		output = processFilter(input, samples);
-	}
-
 	public float[] processFilter(float[] input, int samples){
 		float[] combFilterSamples1 = this.combFilter(input, samples, delayMilliseconds, decay);
 		float[] combFilterSamples2 = this.combFilter(input, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f));
