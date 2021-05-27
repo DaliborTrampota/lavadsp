@@ -30,16 +30,14 @@ public class ReverbConverter {
     public void process(float[] leftIn, float[] rightIn, int inputOffset,
                         float[] leftOut, float[] rightOut, int outputOffset, int samples) {
 
-        for(int i = 0; i < samples; i++) {
+        int delaySamples = (int)(this.delayMilliseconds * (this.sampleRate / 1000)); // assumes kHz sample rate
+        for(int i = 0; i < samples - delaySamples; ++i) {
+            // WARNING: overflow potential
             float l = leftIn[inputOffset + i];
             float r = rightIn[inputOffset + i];
             
-            int delaySamples = (int)(this.delayMilliseconds * (this.sampleRate / 1000)); // assumes kHz sample rate
-            for (int i = 0; i < samples - delaySamples; ++i) {
-                // WARNING: overflow potential
-                leftOut[i + delaySamples + outputOffset] += (l * decay);
-                rightOut[i + delaySamples + outputOffset] += (r * decay);
-            }
+			leftOut[i + delaySamples + outputOffset] += (l * decay);
+			rightOut[i + delaySamples + outputOffset] += (r * decay);
         }
     }
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java

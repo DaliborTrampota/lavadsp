@@ -49,7 +49,7 @@ public class ReversePcmAudioFilter implements FloatPcmAudioFilter {
         
         if(input.length != 2) {
             if(this.reverse == 1f){
-                reverseArray(input);
+                reverseArray(input[0]);
             }
             downstream.process(input, offset, length);
             return;
