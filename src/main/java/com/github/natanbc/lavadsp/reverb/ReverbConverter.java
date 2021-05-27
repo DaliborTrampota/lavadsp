@@ -72,7 +72,7 @@ public class ReverbConverter {
 		float[] allPassFilterSamples2 = this.allPassFilter(allPassFilterSamples1, samples);
 
 		for(int i = 0; i < samples; ++i){
-			output[i + outputOffset] = allPassFilterSamples2[i]
+			output[i + outputOffset] = allPassFilterSamples2[i];
 		}
     }
 
