@@ -1,5 +1,6 @@
 [ ![Download](https://api.bintray.com/packages/natanbc/maven/lavadsp/images/download.svg) ](https://bintray.com/natanbc/maven/lavadsp/_latestVersion)
 
+[![](https://jitpack.io/v/DaliborTrampota/lavadsp.svg)](https://jitpack.io/#DaliborTrampota/lavadsp)
 # lavadsp
 
 A bunch of lavaplayer audio filters implemented with native code
