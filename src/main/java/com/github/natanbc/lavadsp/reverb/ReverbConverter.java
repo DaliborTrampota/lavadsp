@@ -27,10 +27,6 @@ public class ReverbConverter {
 	public void setDecay(float decay) {
         this.decay = decay;
     }
-    
-    public void setDecay(float decay) {
-        this.decay = decay;
-    }
 
     public void setReverbTime(float reverbTime) {
         this.reverbTime = reverbTime;
