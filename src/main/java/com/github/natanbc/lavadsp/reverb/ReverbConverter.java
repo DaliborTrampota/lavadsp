@@ -7,12 +7,15 @@ public class ReverbConverter {
     private float delayMilliseconds = 0.0f;
     private float decay = 0.0f;
 	private float mixPercent = 0.0f;
+
+	private float[] buffer;
     
     public ReverbConverter(int sampleRate) {
         if(sampleRate < 1) {
             throw new IllegalArgumentException("Sample rate < 1");
         }
         this.sampleRate = sampleRate;
+		this.sampleRatekHz = sampleRate / 1000;
     }
     
     public void setDelay(float ms) {
@@ -42,59 +45,46 @@ public class ReverbConverter {
     }*/
 
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
-    public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
-
-        float[] combFilterSamples1 = this.combFilter(input, samples, delayMilliseconds, decay);
-		float[] combFilterSamples2 = this.combFilter(input, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f));
-		float[] combFilterSamples3 = this.combFilter(input, samples, (delayMilliseconds + 19.31f), (decay - 0.2743f));
-		float[] combFilterSamples4 = this.combFilter(input, samples, (delayMilliseconds - 7.97f), (decay - 0.31f));
+	public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 		
-		//Adding the 4 Comb Filters
-		float[] outputComb = new float[samples];
-		for(int i = 0; i < samples; i++) {
-			outputComb[i] = ((combFilterSamples1[i] + combFilterSamples2[i] + combFilterSamples3[i] + combFilterSamples4[i])) ;
-		}	   	
-	
-		//Deallocating individual Comb Filter array outputs
-		combFilterSamples1 = null;
-		combFilterSamples2 = null;
-		combFilterSamples3 = null;
-		combFilterSamples4 = null;
-	
-		//Algorithm for Dry/Wet Mix in the output audio
-		float [] mixAudio = new float[samples];
-		for(int i=0; i < samples; ++i)
-			mixAudio[i] = ((100 - mixPercent) * input[i]) + (mixPercent * outputComb[i]); 
-
-		
-		//Method calls for 2 All Pass Filters. Defined at the bottom
-		float[] allPassFilterSamples1 = this.allPassFilter(mixAudio, samples);
-		float[] res = this.allPassFilter(allPassFilterSamples1, samples);
-
 		for(int i = 0; i < samples; ++i){
-			output[i + outputOffset] = res[i];
-		}
-    }
 
-    //Method for Comb Filter
-	public float[] combFilter(float[] input, int samples, float delayinMilliSeconds, float decayFactor)
-	{
-		//Calculating delay in samples from the delay in Milliseconds. Calculated from number of samples per millisecond
-		int delaySamples = (int) ((float)delayinMilliSeconds * (sampleRate / 1000));
-		
-		float[] combFilterSamples = Arrays.copyOf(input, samples);
-	
-		//Applying algorithm for Comb Filter
-		for (int i = 0; i < samples - delaySamples; i++){
-			combFilterSamples[i+delaySamples] += ((float)combFilterSamples[i] * decayFactor);
+			int curFrame = i + inputOffset
+			float in = input[curFrame];
+
+			float comb1 = this.combFilterFrame(input, curFrame, samples, delayMilliseconds, decay);
+			float comb2 = this.combFilterFrame(input, curFrame, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f));
+			float comb3 = this.combFilterFrame(input, curFrame, samples, (delayMilliseconds + 19.31f), (decay - 0.2743f));
+			float comb4 = this.combFilterFrame(input, curFrame, samples, (delayMilliseconds - 7.97f), (decay - 0.31f));
+
+			in = (comb1 + comb2 + comb3 + comb4);
+
+			float out = ((100 - this.mixPercent) * input[curFrame]) + (this.mixPercent * in);
+
+			//out = this.allPassFilterFrame(input, curFrame, samples);
+			//out = this.allPassFilterFrame(input, curFrame, samples);
+
+			output[i + outputOffset] = out;
 		}
-	    return combFilterSamples;
+	}
+	
+	public float combFilterFrame(float[] input, int curFrame, int samples, float delayinMilliSeconds, float decayFactor){
+		int delaySamples = (int)delayinMilliSeconds * this.sampleRatekHz;
+
+		if(curFrame - delaySamples < 0) return input[curFrame];
+		return input[curFrame - delaySamples] + input[curFrame] * decayFactor;
+	}
+
+	public float allPassFilterFrame(float[] input, int curFrame, int samples){
+		int delaySamples = (int)(89.27f * this.sampleRatekHz); // Number of delay samples. Calculated from number of samples per millisecond
+
+		//input[]
 	}
 	
 	//Method for All Pass Filter
 	public float[] allPassFilter(float[] input, int samples)
 	{
-		int delaySamples = (int) ((float)89.27f * (sampleRate / 1000)); // Number of delay samples. Calculated from number of samples per millisecond
+		int delaySamples = (int)(89.27f * this.sampleRatekHz); // Number of delay samples. Calculated from number of samples per millisecond
 		float[] allPassFilterInput = new float[samples];
 		float decay = 0.131f;
 
