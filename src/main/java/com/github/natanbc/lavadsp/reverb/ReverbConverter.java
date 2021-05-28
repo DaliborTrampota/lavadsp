@@ -44,7 +44,7 @@ public class ReverbConverter {
 			if(i - delaySamples < 0){
 				curDelay = i;
 			}
-			curFrame = input[i - curDelay] * this.decay;
+			curFrame += input[i + inputOffset - curDelay] * this.decay;
 
 			output[i + outputOffset] = curFrame;
         }
