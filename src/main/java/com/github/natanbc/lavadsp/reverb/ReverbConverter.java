@@ -49,7 +49,7 @@ public class ReverbConverter {
 		
 		for(int i = 0; i < samples; ++i){
 
-			int curFrame = i + inputOffset
+			int curFrame = i + inputOffset;
 			float in = input[curFrame];
 
 			float comb1 = this.combFilterFrame(input, curFrame, samples, delayMilliseconds, decay);
