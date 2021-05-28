@@ -49,7 +49,7 @@ public class ReverbConverter {
 
 	public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 		
-		int M = (int)this.sampleRatekHz * this.delayMilliseconds;
+		int M = (int)(this.sampleRatekHz * this.delayMilliseconds);
 
 		for(int i = 0; i < samples; ++i){
 
@@ -62,14 +62,14 @@ public class ReverbConverter {
 			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame - M]);
 			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame - M]);
 
-			copy[i] = (-0.7 * input[curFrame]) + input[curFrame - M] + (0.7 * copy[curFrame - M]);
+			copy[i] = (-0.7f * input[curFrame]) + input[curFrame - M] + (0.7f * copy[curFrame - M]);
 
 			output[i + outputOffset] = copy[i];
 		}
 	}
 
 	public float calculateGain(float delay){
-		return Math.pow(2, ((-this.reverbTime) / 3) * delay);
+		return (float)Math.pow(2, ((-this.reverbTime) / 3) * delay);
 	}
 
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java

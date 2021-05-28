@@ -46,41 +46,6 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
         return converter != null;
     }
 
-    /**
-     * Returns the current level.
-     *
-     * @return The current level.
-     */
-    public float getDecay() {
-        return this.decay;
-    }
-
-    /**
-     * Sets the effect decay.
-     *
-     * @param level Decay to set.
-     *
-     * @return {@code this}, for chaining calls
-     */
-    public ReverbPcmAudioFilter setDecay(float decay) {
-        this.decay = decay;
-        if(converter != null) {
-            converter.setDecay(decay);
-        }
-        return this;
-    }
-
-    /**
-     * Updates the effect level, using a function that accepts the current value
-     * and returns a new value.
-     *
-     * @param function Function used to map the level.
-     *
-     * @return {@code this}, for chaining calls
-     */
-    public ReverbPcmAudioFilter updateDecay(FloatToFloatFunction function) {
-        return setDecay(function.apply(decay));
-    }
 
     /**
      * Returns the current mono level.
