@@ -80,11 +80,11 @@ public class ReverbConverter {
 		int delaySamples = (int)(89.27f * this.sampleRatekHz); // Number of delay samples. Calculated from number of samples per millisecond
 
 		//input[]
+		return input[curFrame];
 	}
 	
 	//Method for All Pass Filter
-	public float[] allPassFilter(float[] input, int samples)
-	{
+	public float[] allPassFilter(float[] input, int samples){
 		int delaySamples = (int)(89.27f * this.sampleRatekHz); // Number of delay samples. Calculated from number of samples per millisecond
 		float[] allPassFilterInput = new float[samples];
 		float decay = 0.131f;
