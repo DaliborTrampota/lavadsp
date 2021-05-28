@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class ReverbConverter {
     private final int sampleRate;
+    private final int sampleRatekHz;
     private float delayMilliseconds = 0.0f;
     private float decay = 0.0f;
 	private float mixPercent = 0.0f;
