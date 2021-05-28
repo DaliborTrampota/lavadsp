@@ -49,7 +49,7 @@ public class ReverbConverter {
 
 	public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 		
-		float M = this.sampleRatekHz * this.delayMilliseconds;
+		int M = (int)this.sampleRatekHz * this.delayMilliseconds;
 
 		for(int i = 0; i < samples; ++i){
 
