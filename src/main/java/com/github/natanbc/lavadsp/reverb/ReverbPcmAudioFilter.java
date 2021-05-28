@@ -24,8 +24,7 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
     private final ReverbConverter converter;
 
     private volatile float delayMilliseconds = 0.0f;
-    private volatile float decay = 0.0f;
-    private volatile float mixPercent = 0.0f;
+    private volatile float reverbTime = 0.0f;
 
     public ReverbPcmAudioFilter(FloatPcmAudioFilter downstream, int channelCount, int sampleRate) {
         this.downstream = downstream;
@@ -119,13 +118,14 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
         return setDelay(function.apply(delayMilliseconds));
     }
 
+
 /**
      * Returns the current mono level.
      *
      * @return The current mono level.
      */
-    public float getMixPercent() {
-        return this.mixPercent;
+    public float getReverbTime() {
+        return this.reverbTime;
     }
 
     /**
@@ -135,10 +135,10 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
      *
      * @return {@code this}, for chaining calls
      */
-    public ReverbPcmAudioFilter setMixPercent(float mixPercent) {
-        this.mixPercent = mixPercent;
+    public ReverbPcmAudioFilter setReverbTime(float reverbTime) {
+        this.reverbTime = reverbTime;
         if(converter != null) {
-            converter.setMixPercent(mixPercent);
+            converter.setReverbTime(reverbTime);
         }
         return this;
     }
@@ -151,8 +151,8 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
      *
      * @return {@code this}, for chaining calls
      */
-    public ReverbPcmAudioFilter updateMixPercent(FloatToFloatFunction function) {
-        return setMixPercent(function.apply(mixPercent));
+    public ReverbPcmAudioFilter updateReverbTime(FloatToFloatFunction function) {
+        return setReverbTime(function.apply(reverbTime));
     }
 
     @Override
