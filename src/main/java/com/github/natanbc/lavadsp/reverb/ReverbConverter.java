@@ -23,6 +23,10 @@ public class ReverbConverter {
     public void setDelay(float ms) {
         this.delayMilliseconds = ms;
     }
+
+	public void setDecay(float decay) {
+        this.decay = decay;
+    }
     
     public void setDecay(float decay) {
         this.decay = decay;
@@ -33,21 +37,24 @@ public class ReverbConverter {
     }
 
     
-    /*public void process(float[] leftIn, float[] rightIn, int inputOffset,
-                        float[] leftOut, float[] rightOut, int outputOffset, int samples) {
+    public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
         int delaySamples = (int)(this.delayMilliseconds * (this.sampleRate / 1000)); // assumes kHz sample rate
-        for(int i = 0; i < samples - delaySamples; ++i) {
+        for(int i = 0; i < samples; ++i) {
             // WARNING: overflow potential
-            float l = leftIn[inputOffset + i];
-            float r = rightIn[inputOffset + i];
+            float curFrame = input[i + inputOffset];
+			int curDelay = delaySamples;
             
-			leftOut[i + delaySamples + outputOffset] += (l * decay);
-			rightOut[i + delaySamples + outputOffset] += (r * decay);
-        }
-    }*/
+			if(i - delaySamples < 0){
+				curDelay = i;
+			}
+			curFrame = input[i - curDelay] * this.decay;
 
-	public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
+			output[i + outputOffset] = curFrame;
+        }
+    }
+
+	/*public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 		
 		int M = (int)(this.sampleRatekHz * this.delayMilliseconds);
 
@@ -74,7 +81,7 @@ public class ReverbConverter {
 
 	public float calculateGain(float delay){
 		return (float)Math.pow(2, ((-this.reverbTime) / 3) * delay);
-	}
+	}*/
 
     //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
 	
