@@ -62,7 +62,7 @@ public class ReverbConverter {
 			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame - M]);
 			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame - M]);
 
-			copy[i] = (-0.7 * input[curFrame]) + input[curFrame - M] + (0.7 * copy[curFrame - M])
+			copy[i] = (-0.7 * input[curFrame]) + input[curFrame - M] + (0.7 * copy[curFrame - M]);
 
 			output[i + outputOffset] = copy[i];
 		}
