@@ -35,16 +35,16 @@ public class ReverbConverter {
     
     public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
-        int delaySamples = (int)(this.delayMilliseconds * (this.sampleRate / 1000)); // assumes kHz sample rate
+        int delaySamples = (int)(this.delayMilliseconds * this.sampleRatekHz); // assumes kHz sample rate
         for(int i = 0; i < samples; ++i) {
             // WARNING: overflow potential
             float curFrame = input[i + inputOffset];
 			int curDelay = delaySamples;
             
 			if(i - delaySamples < 0){
-				curDelay = i;
+				curDelay = i + inputOffset;
 			}
-			curFrame += input[i + inputOffset - curDelay] * this.decay;
+			curFrame += (input[i + inputOffset - curDelay] * this.decay);
 
 			output[i + outputOffset] = curFrame;
         }
