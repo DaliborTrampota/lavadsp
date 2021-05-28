@@ -57,10 +57,10 @@ public class ReverbConverter {
 			float in = input[curFrame];
 
 			float[] copy = Arrays.copyOf(input, samples);
-			copy[i]  = input[curFrame] + (this.calculateGain(this.delayMilliseconds) * copy[curFrame − M]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 200f) * copy[curFrame − M]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame − M]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame − M]);
+			copy[i]  = input[curFrame] + (this.calculateGain(this.delayMilliseconds) * copy[curFrame - M]);
+			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 200f) * copy[curFrame - M]);
+			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame - M]);
+			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame - M]);
 
 			copy[i] = (-0.7 * input[curFrame]) + input[curFrame - M] + (0.7 * copy[curFrame - M])
 
