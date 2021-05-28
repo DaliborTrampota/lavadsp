@@ -54,15 +54,19 @@ public class ReverbConverter {
 		for(int i = 0; i < samples; ++i){
 
 			int curFrame = i + inputOffset;
+			int curM = M;
+			if(curFrame - curM < 0){
+				curM = curFrame;
+			}
 			float in = input[curFrame];
 
 			float[] copy = Arrays.copyOf(input, samples);
-			copy[i]  = input[curFrame] + (this.calculateGain(this.delayMilliseconds) * copy[curFrame - M]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 200f) * copy[curFrame - M]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame - M]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame - M]);
+			copy[i]  = input[curFrame] + (this.calculateGain(this.delayMilliseconds) * copy[curFrame - curM]);
+			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 200f) * copy[curFrame - curM]);
+			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame - curM]);
+			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame - curM]);
 
-			copy[i] = (-0.7f * input[curFrame]) + input[curFrame - M] + (0.7f * copy[curFrame - M]);
+			copy[i] = (-0.7f * input[curFrame]) + input[curFrame - curM] + (0.7f * copy[curFrame - curM]);
 
 			output[i + outputOffset] = copy[i];
 		}
