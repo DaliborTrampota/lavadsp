@@ -35,7 +35,7 @@ public class ReverbConverter {
 
 
 	public void updateBuffer(){
-		float[] newBuffer = new float[(int) sampleRate * (delayMilliseconds * 1000)];
+		float[] newBuffer = new float[(int) (sampleRate * delayMilliseconds * 1000)];
 
 		for(int i = 0; i < newBuffer.length; ++i){
 			if(buffer.length <= i) break;
