@@ -104,8 +104,8 @@ public class ReverbConverter {
 		float[] allPassFilterInput = new float[samples];
 		float decay = 0.131f;
 
-		println(((string) delaySamples) + " delay");
-		println(((string) allPassFilterInput.length) + " length");
+		println(delaySamples.toString() + " delay");
+		println((allPassFilterInput.length.toString() + " length");
 
 		//Applying algorithm for All Pass Filter
 		for(int i = 0; i < samples; ++i){
