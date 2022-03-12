@@ -22,7 +22,7 @@ public class ReverbConverter {
     
     public void setDelay(float ms) {
         this.delayMilliseconds = ms;
-		updateBuffer();
+		//updateBuffer();
     }
 
 	public void setDecay(float decay) {
