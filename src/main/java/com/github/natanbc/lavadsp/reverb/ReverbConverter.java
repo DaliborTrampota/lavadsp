@@ -22,6 +22,7 @@ public class ReverbConverter {
     
     public void setDelay(float ms) {
         this.delayMilliseconds = ms;
+		updateBuffer();
     }
 
 	public void setDecay(float decay) {
@@ -32,53 +33,107 @@ public class ReverbConverter {
         this.reverbTime = reverbTime;
     }
 
-    
+
+	public void updateBuffer(){
+		float[] newBuffer = new float[(int) sampleRate * (delayMilliseconds * 1000)];
+
+		for(int i = 0; i < newBuffer.length; ++i){
+			if(buffer.length <= i) break;
+			newBuffer[i] = buffer[i];
+		}
+		buffer = newBuffer;
+	}
+    //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
     public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
 
-        int delaySamples = (int)(this.delayMilliseconds * this.sampleRatekHz); // assumes kHz sample rate
-        for(int i = 0; i < samples; ++i) {
-            // WARNING: overflow potential
-            float curFrame = input[i + inputOffset];
-			int curDelay = delaySamples;
-            
-			if(i - delaySamples < 0){
-				curDelay = i + inputOffset;
-			}
-			curFrame += (input[i + inputOffset - curDelay] * this.decay);
+		/*for(int i = 0; i < input.length - inputOffset; ++i){
 
-			output[i + outputOffset] = curFrame;
-        }
+		}*/
+
+        float[] combFilterSamples1 = combFilter(input, samples, delayMilliseconds, decay, inputOffset);
+		float[] combFilterSamples2 = combFilter(input, samples, (delayMilliseconds - 11.73f), (decay - 0.1313f), inputOffset);
+		float[] combFilterSamples3 = combFilter(input, samples, (delayMilliseconds + 19.31f), (decay - 0.2743f), inputOffset);
+		float[] combFilterSamples4 = combFilter(input, samples, (delayMilliseconds - 7.97f), (decay - 0.31f), inputOffset);
+
+		//Adding the 4 Comb Filters
+		float[] outputComb = new float[samples];
+		for(int i = 0; i < samples; ++i) {
+			outputComb[i] = ((combFilterSamples1[inputOffset + i] + combFilterSamples2[inputOffset + i] + combFilterSamples3[inputOffset + i] + combFilterSamples4[inputOffset + i])) ;
+		}	   	
+
+		//Deallocating individual Comb Filter array outputs
+		combFilterSamples1 = null;
+		combFilterSamples2 = null;
+		combFilterSamples3 = null;
+		combFilterSamples4 = null;
+
+		//Algorithm for Dry/Wet Mix in the output audio
+		float [] mixAudio = new float[samples];
+		for(int i=0; i < samples; ++i)
+			mixAudio[i] = ((100 - mixPercent) * input[inputOffset + i]) + (mixPercent * outputComb[i]); 
+
+
+		//Method calls for 2 All Pass Filters. Defined at the bottom
+		float[] allPassFilterSamples1 = allPassFilter(mixAudio, samples);
+		float[] allPassFilterSamples2 = allPassFilter(allPassFilterSamples1, samples);
+
+		for(int i = 0; i < samples; i++) {
+			output[outputOffset + i] = allPassFilterSamples2[i]
+		}	
     }
 
-	/*public void process(float[] input, int inputOffset, float[] output, int outputOffset, int samples){
-		
-		int M = (int)(this.sampleRatekHz * this.delayMilliseconds);
+    //Method for Comb Filter
+	public float[] combFilter(float[] input, int samples, float delay, float decay, int offset)
+	{
+		//Calculating delay in samples from the delay in Milliseconds. Calculated from number of samples per millisecond
+		int delaySamples = (int) ((float)delay * (sampleRatekHz));
 
-		for(int i = 0; i < samples; ++i){
+		float[] combFilterSamples = Arrays.copyOf(input, samples);
 
-			int curFrame = i + inputOffset;
-			int curM = M;
-			if(curFrame - curM < 0){
-				curM = curFrame;
-			}
-			float in = input[curFrame];
-
-			float[] copy = Arrays.copyOf(input, samples);
-			copy[i]  = input[curFrame] + (this.calculateGain(this.delayMilliseconds) * copy[curFrame - curM]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 200f) * copy[curFrame - curM]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 400f) * copy[curFrame - curM]);
-			copy[i] += input[curFrame] + (this.calculateGain(this.delayMilliseconds + 600f) * copy[curFrame - curM]);
-
-			copy[i] = (-0.7f * input[curFrame]) + input[curFrame - curM] + (0.7f * copy[curFrame - curM]);
-
-			output[i + outputOffset] = copy[i];
+		//Applying algorithm for Comb Filter
+		for (int i = 0; i < samples - delaySamples; i++){
+			combFilterSamples[offset + i] += ((float)combFilterSamples[offset + i - delaySamples] * decay);
 		}
+	    return combFilterSamples;
 	}
 
-	public float calculateGain(float delay){
-		return (float)Math.pow(2, ((-this.reverbTime) / 3) * delay);
-	}*/
+	//Method for All Pass Filter
+	public float[] allPassFilter(float[] input, int samples)
+	{
+		int delaySamples = (int) ((float)89.27f * (sampleRatekHz)); // Number of delay samples. Calculated from number of samples per millisecond
+		float[] allPassFilterInput = new float[samples];
+		float decay = 0.131f;
 
-    //https://github.com/Rishikeshdaoo/Reverberator/blob/master/Reverberator/src/com/rishi/reverb/Reverberation.java
+		println(((string) delaySamples) + " delay");
+		println(((string) allPassFilterInput.length) + " length");
+
+		//Applying algorithm for All Pass Filter
+		for(int i = 0; i < samples; ++i){
+			allPassFilterInput[i] = input[i];
+			if(i - delaySamples >= 0)
+				allPassFilterInput[i] += -decay * allPassFilterInput[i-delaySamples];
+
+			if(i - delaySamples >= 1)
+				allPassFilterInput[i] += decay * allPassFilterInput[i+20-delaySamples];
+		}
+
+
+		//This is for smoothing out the samples and normalizing the audio. Without implementing this, the samples overflow causing clipping of audio
+		float value = allPassFilterInput[0];
+		float max = 0.0f;
+
+		for(int i = 0; i < samples; ++i) {
+			if(Math.abs(allPassFilterInput[i]) > max)
+				max = Math.abs(allPassFilterInput[i]);
+		}
+
+		for(int i = 0; i < allPassFilterInput.length; ++i) {
+			float currentValue = allPassFilterInput[i];
+			value = ((value + (currentValue - value))/max);
+
+			allPassFilterInput[i] = value;
+		}		
+	    return allPassFilterInput;
+	}
 	
 }
