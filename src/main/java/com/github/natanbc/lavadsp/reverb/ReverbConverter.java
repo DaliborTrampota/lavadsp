@@ -92,7 +92,7 @@ public class ReverbConverter {
 
 		//Applying algorithm for Comb Filter
 		for (int i = 0; i < samples - delaySamples; i++){
-			combFilterSamples[offset + i] += ((float)combFilterSamples[offset + i - delaySamples] * decay);
+			combFilterSamples[offset + i + delaySamples] += ((float)combFilterSamples[offset + i] * decay);
 		}
 	    return combFilterSamples;
 	}
