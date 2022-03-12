@@ -7,8 +7,8 @@ public class ReverbConverter {
     private final int sampleRate;
     private final int sampleRatekHz;
     private float delayMilliseconds = 0.0f;
-	private float reverbTime = 0.0f;
     private float decay = 0.0f;
+	private float mixPercent = 0.0f;
 
 	private float[] buffer;
     
@@ -28,9 +28,9 @@ public class ReverbConverter {
 	public void setDecay(float decay) {
         this.decay = decay;
     }
-
-    public void setReverbTime(float reverbTime) {
-        this.reverbTime = reverbTime;
+	
+	public void setMixPercent(float mixPercent) {
+        this.mixPercent = mixPercent * 100;
     }
 
 

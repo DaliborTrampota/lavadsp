@@ -24,8 +24,8 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
     private final ReverbConverter converter;
 
     private volatile float delayMilliseconds = 0.0f;
-    private volatile float reverbTime = 0.0f;
     private volatile float decay = 0.0f;
+    private volatile float mixPercent = 0.0f;
 
     public ReverbPcmAudioFilter(FloatPcmAudioFilter downstream, int channelCount, int sampleRate) {
         this.downstream = downstream;
@@ -69,6 +69,42 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
             converter.setDecay(decay);
         }
         return this;
+    }
+
+    /**
+     * Returns the current level.
+     *
+     * @return The current level.
+     */
+    public float getMixPercent() {
+        return this.mixPercent;
+    }
+
+    /**
+     * Sets the effect decay.
+     *
+     * @param level Decay to set.
+     *
+     * @return {@code this}, for chaining calls
+     */
+    public ReverbPcmAudioFilter setMixPercent(float mixPercent) {
+        this.mixPercent = mixPercent;
+        if(converter != null) {
+            converter.setMixPercent(mixPercent);
+        }
+        return this;
+    }
+
+    /**
+     * Updates the effect mono level, using a function that accepts the current value
+     * and returns a new value.
+     *
+     * @param function Function used to map the mono level.
+     *
+     * @return {@code this}, for chaining calls
+     */
+    public ReverbPcmAudioFilter updateMixPercent(FloatToFloatFunction function) {
+        return setMixPercent(function.apply(mixPercent));
     }
 
     /**
@@ -119,42 +155,6 @@ public class ReverbPcmAudioFilter implements FloatPcmAudioFilter {
         return setDelay(function.apply(delayMilliseconds));
     }
 
-
-/**
-     * Returns the current mono level.
-     *
-     * @return The current mono level.
-     */
-    public float getReverbTime() {
-        return this.reverbTime;
-    }
-
-    /**
-     * Sets the effect mono level.
-     *
-     * @param level Mono level to set.
-     *
-     * @return {@code this}, for chaining calls
-     */
-    public ReverbPcmAudioFilter setReverbTime(float reverbTime) {
-        this.reverbTime = reverbTime;
-        if(converter != null) {
-            converter.setReverbTime(reverbTime);
-        }
-        return this;
-    }
-
-    /**
-     * Updates the effect mono level, using a function that accepts the current value
-     * and returns a new value.
-     *
-     * @param function Function used to map the mono level.
-     *
-     * @return {@code this}, for chaining calls
-     */
-    public ReverbPcmAudioFilter updateReverbTime(FloatToFloatFunction function) {
-        return setReverbTime(function.apply(reverbTime));
-    }
 
     @Override
     public void process(float[][] input, int offset, int length) throws InterruptedException {
