@@ -28,7 +28,7 @@ public class ReverbConverter {
 	public void setDecay(float decay) {
         this.decay = decay;
     }
-	
+
 	public void setMixPercent(float mixPercent) {
         this.mixPercent = mixPercent * 100;
     }
@@ -104,8 +104,8 @@ public class ReverbConverter {
 		float[] allPassFilterInput = new float[samples];
 		float decay = 0.131f;
 
-		println(delaySamples.toString() + " delay");
-		println(allPassFilterInput.length.toString() + " length");
+		println(Integer.toString(delaySamples) + " delay");
+		println(Integer.toString(allPassFilterInput.length) + " length");
 
 		//Applying algorithm for All Pass Filter
 		for(int i = 0; i < samples; ++i){
